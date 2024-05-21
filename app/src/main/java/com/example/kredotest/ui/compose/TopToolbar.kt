@@ -1,7 +1,6 @@
 package com.example.kredotest.ui.compose
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -21,23 +20,11 @@ import com.example.kredotest.ui.theme.KredoTestTheme
 import com.example.kredotest.ui.theme.White50
 import com.example.kredotest.ui.theme.smallBoldTitle
 
-@Preview(showBackground = false)
 @Composable
-fun TopToolbarPreview() {
-    KredoTestTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = BackgroundBlue
-        ) {
-            TopToolbar(Modifier.fillMaxWidth())
-        }
-    }
-}
-
-@Composable
-fun TopToolbar(modifier: Modifier) {
+fun TopToolbar(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier
+        modifier = Modifier
+            .then(modifier)
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(0.dp, 16.dp, 0.dp, 0.dp)
@@ -61,5 +48,17 @@ fun TopToolbar(modifier: Modifier) {
             style = smallBoldTitle,
             text = "Андрій Б. •• 2088 "
         )
+    }
+}
+
+@Preview(showBackground = false)
+@Composable
+private fun TopToolbarPreview() {
+    KredoTestTheme {
+        Surface(
+            color = BackgroundBlue
+        ) {
+            TopToolbar(Modifier.fillMaxWidth())
+        }
     }
 }

@@ -73,3 +73,18 @@ val smallBoldTitle = TextStyle(
     lineHeight = 16.sp,
     color = Color.White
 )
+
+val smallText = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Medium,
+    fontSize = 14.sp,
+    lineHeight = 21.sp,
+    color = LightGray
+)
+val smallTextBlue = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Medium,
+    fontSize = 12.sp,
+    lineHeight = 14.sp,
+    color = Blue
+)
