@@ -16,3 +16,7 @@ val Blue = Color(0xFF354762)
 val BackgroundBlue = Color(0xFF143897)
 val PlaceholderBlue = Color(0xFFB9C8DA)
 val White50 = Color(0x80FFFFFF)
+val Ocean = Color(0xFF899BCB)
+
+val Orange =Color(0xFFFF7A2F)
+val LightOrange =Color(0xFFF59910)

@@ -58,8 +58,9 @@ fun KredoTestTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = BackgroundBlue.toArgb()//colorScheme.background.toArgb()
-            window.navigationBarColor = Color.White.toArgb() // here change the color
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            window.statusBarColor = BackgroundBlue.toArgb()
+            window.navigationBarColor = Color.White.toArgb()
 
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
             WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
