@@ -1,5 +1,6 @@
 package com.example.kredotest.ui.compose
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -53,14 +54,18 @@ import com.example.kredotest.ui.theme.fieldHintStyle
 import com.example.kredotest.ui.theme.fieldTitleStyle
 import com.example.kredotest.ui.theme.largePlaceHolder
 import com.example.kredotest.ui.theme.mediumPlaceHolder
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TransactionForm(
     modifier: Modifier = Modifier,
     openDownSheet: () -> Unit = {},
-    selectedSource: Source? = null
+    selectedSource: StateFlow<Source?> = MutableStateFlow(null).asStateFlow(),
 ) {
     Box(
         modifier = Modifier
@@ -78,11 +83,11 @@ fun TransactionForm(
             Text(text = "З картки/рахунку", style = fieldTitleStyle)
             Spacer(modifier = Modifier.height(8.dp))
 
-            if (selectedSource == null) {
+            if (selectedSource.value == null) {
                 ChooseProductInput { openDownSheet() }
             } else {
                 SelectedSource(
-                    source = selectedSource,
+                    source = selectedSource.value!!,
                     openDownSheet = { openDownSheet() }
                 )
             }

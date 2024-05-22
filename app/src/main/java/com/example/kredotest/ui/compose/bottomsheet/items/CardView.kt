@@ -23,6 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.kredotest.R
+import com.example.kredotest.tools.mapAmount
+import com.example.kredotest.tools.mapToCardFormat
 import com.example.kredotest.ui.data.Source
 import com.example.kredotest.ui.data.mockCards
 import com.example.kredotest.ui.theme.BackgroundBlue
@@ -60,7 +62,7 @@ fun CardView(card: Source.Card = Source.Card(), onChooseClick: (Source.Card) -> 
                     style = fieldHintStyle
                 )
                 Text(
-                    text = "** ${card.numbers}",
+                    text = card.numbers.mapToCardFormat(),
                     style = smallTextBlue.copy(textAlign = TextAlign.Center, color = LightGray)
                 )
             }
@@ -71,7 +73,7 @@ fun CardView(card: Source.Card = Source.Card(), onChooseClick: (Source.Card) -> 
         ) {
 
             Text(
-                text = "${card.amount} ₴",
+                text = card.amount.toString().mapAmount(),
                 style = smallTextBlue
             )
 

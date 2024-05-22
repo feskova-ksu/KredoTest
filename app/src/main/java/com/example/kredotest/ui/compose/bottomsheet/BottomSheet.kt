@@ -10,17 +10,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.kredotest.ui.data.mockCards
-import com.example.kredotest.ui.data.mockCounts
 import com.example.kredotest.ui.data.Source
 import com.example.kredotest.ui.theme.BackgroundBlue
 import com.example.kredotest.ui.theme.KredoTestTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheet(
-    selectedSource: Source? = null,
+    selectedSource: StateFlow<Source?> = MutableStateFlow(null).asStateFlow(),
+    listOfCounts: List<Source.Count> = emptyList(),
+    listOfCards: List<Source.Card> = emptyList(),
     onDismiss: () -> Unit = {},
     onSourceSelected: (Source?) -> Unit = {}
 ) {
@@ -34,8 +37,8 @@ fun BottomSheet(
     ) {
         HorizontalViewPager(
             modifier = Modifier.fillMaxHeight(),
-            listOfCounts = mockCounts,
-            listOfCards = mockCards,
+            listOfCounts = listOfCounts,
+            listOfCards = listOfCards,
             selectedSource = selectedSource
         ) {
             onSourceSelected(it)

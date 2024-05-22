@@ -27,9 +27,15 @@ import androidx.compose.ui.unit.dp
 import com.example.kredotest.ui.data.Source
 import com.example.kredotest.ui.theme.BackgroundBlue
 import com.example.kredotest.ui.theme.KredoTestTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 @Composable
-fun MainScreen(selectedSource: Source? = null, openDownSheet: () -> Unit = {}) {
+fun MainScreen(
+    selectedSource: StateFlow<Source?> = MutableStateFlow(null).asStateFlow(),
+    openDownSheet: () -> Unit = {}
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         var isSubmitEnable by remember { mutableStateOf(false) }
 
@@ -74,7 +80,7 @@ fun MainScreen(selectedSource: Source? = null, openDownSheet: () -> Unit = {}) {
 @Composable
 fun FormsColumn(
     modifier: Modifier = Modifier,
-    selectedSource: Source? = null,
+    selectedSource: StateFlow<Source?> = MutableStateFlow(null).asStateFlow(),
     openDownSheet: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()

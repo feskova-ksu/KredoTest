@@ -1,5 +1,7 @@
 package com.example.kredotest.ui.compose.bottomsheet
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
@@ -21,7 +23,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
@@ -54,19 +55,23 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HorizontalViewPager(
     modifier: Modifier = Modifier,
-    selectedSource: Source? = null,
+    selectedSource: StateFlow<Source?> = MutableStateFlow(null).asStateFlow(),
     listOfCards: List<Source.Card> = emptyList(),
     listOfCounts: List<Source.Count> = emptyList(),
     onNewSelected: (Source?) -> Unit = {}
 ) {
-    var newSelected = selectedSource
-    val page = if (selectedSource is Source.Count) 1 else 0
+    var newSelected = selectedSource.value
+    val page = if (selectedSource.value is Source.Count) 1 else 0
     val pagerState = rememberPagerState(page)
     val coroutineScope = rememberCoroutineScope()
     Box(
@@ -87,13 +92,13 @@ fun HorizontalViewPager(
                         0 -> CardsPage(
                             modifier = Modifier.fillMaxHeight(),
                             cards = listOfCards,
-                            selectedSource = selectedSource
+                            selectedSource = selectedSource.value
                         ) { newSelected = it }
 
                         1 -> CountsPage(
                             modifier = Modifier.fillMaxHeight(),
                             counts = listOfCounts,
-                            selectedSource = selectedSource
+                            selectedSource = selectedSource.value
                         ) { newSelected = it }
 
                         else -> Text(text = "Empty page")
@@ -119,7 +124,8 @@ fun HorizontalViewPager(
                 OrangeButton(
                     onClick = {
                         if (newSelected == null) {
-                            newSelected = if (pagerState.currentPage == 0) mockCards[0] else mockCounts[0]
+                            newSelected =
+                                if (pagerState.currentPage == 0) mockCards[0] else mockCounts[0]
                         }
                         onNewSelected(newSelected)
                     },
@@ -131,7 +137,7 @@ fun HorizontalViewPager(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TabRowView(pagerState: PagerState = PagerState(), coroutineScope: CoroutineScope? = null) {
     val indicator = @Composable { tabPositions: List<TabPosition> ->
@@ -189,9 +195,9 @@ private fun CustomIndicator(tabPositions: List<TabPosition>, pagerState: PagerSt
     val indicatorStart by transition.animateDp(
         transitionSpec = {
             if (initialState < targetState) {
-                spring(dampingRatio = 1f, stiffness = 100f)
+                spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
             } else {
-                spring(dampingRatio = 1f, stiffness = 500f)
+                spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
             }
         }, label = ""
     ) {
@@ -201,9 +207,9 @@ private fun CustomIndicator(tabPositions: List<TabPosition>, pagerState: PagerSt
     val indicatorEnd by transition.animateDp(
         transitionSpec = {
             if (initialState < targetState) {
-                spring(dampingRatio = 1f, stiffness = 500f)
+                spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
             } else {
-                spring(dampingRatio = 1f, stiffness = 100f)
+                spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
             }
         }, label = ""
     ) {
