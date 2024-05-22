@@ -24,8 +24,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.kredotest.R
-import com.example.kredotest.ui.data.mockCounts
+import com.example.kredotest.tools.mapAmount
+import com.example.kredotest.tools.mapToCountFormat
 import com.example.kredotest.ui.data.Source
+import com.example.kredotest.ui.data.mockCounts
 import com.example.kredotest.ui.theme.BackgroundBlue
 import com.example.kredotest.ui.theme.KredoTestTheme
 import com.example.kredotest.ui.theme.LightBlue
@@ -68,14 +70,8 @@ fun CountView(count: Source.Count = Source.Count(), onChooseClick: (Source.Count
                     text = count.name,
                     style = fieldHintStyle
                 )
-                val text =
-                    "${count.numbers.substring(0..3)}...${count.numbers.substring((count.numbers.length - 8)..<count.numbers.length - 4)} ${
-                        count.numbers.substring(
-                            (count.numbers.length - 4)..<count.numbers.length
-                        )
-                    }"
                 Text(
-                    text = text,
+                    text = count.numbers.mapToCountFormat(),
                     style = smallTextBlue.copy(textAlign = TextAlign.Center, color = LightGray)
                 )
             }
@@ -86,7 +82,7 @@ fun CountView(count: Source.Count = Source.Count(), onChooseClick: (Source.Count
         ) {
 
             Text(
-                text = "${count.amount} ₴",
+                text = count.amount.toString().mapAmount(),
                 style = smallTextBlue
             )
 

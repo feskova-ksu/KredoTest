@@ -17,37 +17,44 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.kredotest.ui.compose.MainScreen
 import com.example.kredotest.ui.compose.bottomsheet.BottomSheet
-import com.example.kredotest.ui.data.Source
 import com.example.kredotest.ui.theme.BackgroundBlue
 import com.example.kredotest.ui.theme.KredoTestTheme
 
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel = MainViewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .windowInsetsPadding(WindowInsets.systemBars)
-            ) {
-                var showSheet by remember { mutableStateOf(false) }
-                var selectedSource by remember { mutableStateOf<Source?>(null) }
-                if (showSheet) {
-                    BottomSheet(
-                        selectedSource = selectedSource,
-                        onDismiss = { showSheet = false },
-                        onSourceSelected = { selectedSource = it }
-                    )
-                }
-                KredoTestTheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = BackgroundBlue
+            KredoTestTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = BackgroundBlue
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .windowInsetsPadding(WindowInsets.systemBars)
                     ) {
+                        //TODO:move all logic with data to ViewModel
+                        var showSheet by remember { mutableStateOf(false) }
+                        val listOfCounts by remember { mutableStateOf(viewModel.listOfCounts.value) }
+                        val listOfCards by remember { mutableStateOf(viewModel.listOfCards.value) }
+                        if (showSheet) {
+                            BottomSheet(
+                                selectedSource = viewModel.source,
+                                listOfCounts = listOfCounts,
+                                listOfCards = listOfCards,
+                                onDismiss = { showSheet = false },
+                                onSourceSelected = {
+                                    it?.let { viewModel.onNewSource(it) }
+                                }
+                            )
+                        }
                         MainScreen(
-                            selectedSource = selectedSource,
+                            selectedSource = viewModel.source,
                             openDownSheet = { showSheet = true }
                         )
                     }
