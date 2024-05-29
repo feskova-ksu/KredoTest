@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,9 +33,9 @@ fun OrangeButton(
     Button(
         modifier = Modifier
             .then(modifier)
+            .clip(shape = RoundedCornerShape(12.dp))
             .background(
                 brush = Brush.linearGradient(colors = listOf(Orange, LightOrange)),
-                shape = RoundedCornerShape(12.dp)
             )
             .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
@@ -64,7 +65,8 @@ fun GrayButton(
     Button(
         modifier = Modifier
             .then(modifier)
-            .background(color = LightBlue, shape = RoundedCornerShape(12.dp))
+            .clip(shape = RoundedCornerShape(12.dp))
+            .background(color = LightBlue)
             .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -22,6 +23,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -50,96 +54,97 @@ import com.example.kredotest.ui.data.mockCounts
 import com.example.kredotest.ui.theme.BackgroundBlue
 import com.example.kredotest.ui.theme.KredoTestTheme
 import com.example.kredotest.ui.theme.Ocean
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("StateFlowValueCalledInComposition")
-@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HorizontalViewPager(
+fun SelectSourceViewPager(
     modifier: Modifier = Modifier,
-    selectedSource: StateFlow<Source?> = MutableStateFlow(null).asStateFlow(),
+    selectedSource: Source? = null,
     listOfCards: List<Source.Card> = emptyList(),
     listOfCounts: List<Source.Count> = emptyList(),
     onNewSelected: (Source?) -> Unit = {}
 ) {
-    var newSelected = selectedSource.value
-    val page = if (selectedSource.value is Source.Count) 1 else 0
-    val pagerState = rememberPagerState(page)
+    var newSelected = selectedSource
+    val page = if (selectedSource is Source.Count) 1 else 0
+    val pagerState = rememberPagerState(initialPage = page) { 2 }
     val coroutineScope = rememberCoroutineScope()
     Box(
         modifier = Modifier
             .then(modifier)
-            .padding(horizontal = 16.dp)
     ) {
 
         Column(modifier = Modifier.align(Alignment.TopCenter)) {
-            TabRowView(pagerState, coroutineScope)
+            TabRowView(modifier = Modifier.padding(horizontal = 16.dp), pagerState, coroutineScope)
             Spacer(modifier = Modifier.height(16.dp))
             HorizontalPager(
-                modifier = Modifier.weight(1f, fill = false),
+                modifier = Modifier.weight(1f, fill = true),
                 state = pagerState,
-                count = 2,
-                content = {
-                    when (it) {
-                        0 -> CardsPage(
-                            modifier = Modifier.fillMaxHeight(),
-                            cards = listOfCards,
-                            selectedSource = selectedSource.value
-                        ) { newSelected = it }
+                beyondBoundsPageCount = 1
+            ) {
+                when (it) {
+                    0 -> CardsPage(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxHeight(),
+                        cards = listOfCards,
+                        selectedSource = selectedSource
+                    ) { newSelected = it }
 
-                        1 -> CountsPage(
-                            modifier = Modifier.fillMaxHeight(),
-                            counts = listOfCounts,
-                            selectedSource = selectedSource.value
-                        ) { newSelected = it }
+                    1 -> CountsPage(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxHeight(),
+                        counts = listOfCounts,
+                        selectedSource = selectedSource
+                    ) { newSelected = it }
 
-                        else -> Text(text = "Empty page")
-                    }
+                    else -> Text(text = "Empty page")
                 }
-            )
-        }
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            if (pagerState.currentPage == 0) {
-                GrayButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    text = "Відкрити нову картку"
-                )
             }
-            if ((pagerState.currentPage == 1 && listOfCounts.isNotEmpty()) || listOfCards.isNotEmpty())
-                OrangeButton(
-                    onClick = {
-                        if (newSelected == null) {
-                            newSelected =
-                                if (pagerState.currentPage == 0) mockCards[0] else mockCounts[0]
-                        }
-                        onNewSelected(newSelected)
-                    },
-                    modifier = Modifier
-                        .align(Alignment.End),
-                    text = "Підтвердити"
-                )
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .align(Alignment.End)
+                    .padding(bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (pagerState.currentPage == 0) {
+                    GrayButton(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        text = "Відкрити нову картку"
+                    )
+                }
+                if ((pagerState.currentPage == 1 && listOfCounts.isNotEmpty()) || listOfCards.isNotEmpty())
+                    OrangeButton(
+                        onClick = {
+                            if (newSelected == null) {
+                                newSelected =
+                                    if (pagerState.currentPage == 0) mockCards[0] else mockCounts[0]
+                            }
+                            onNewSelected(newSelected)
+                        },
+                        modifier = Modifier
+                            .align(Alignment.End),
+                        text = "Підтвердити"
+                    )
+            }
         }
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TabRowView(pagerState: PagerState = PagerState(), coroutineScope: CoroutineScope? = null) {
+fun TabRowView(
+    modifier: Modifier = Modifier,
+    pagerState: PagerState? = null,
+    coroutineScope: CoroutineScope? = null
+) {
+    if (pagerState == null) return
     val indicator = @Composable { tabPositions: List<TabPosition> ->
         CustomIndicator(tabPositions, pagerState)
     }
@@ -148,6 +153,7 @@ fun TabRowView(pagerState: PagerState = PagerState(), coroutineScope: CoroutineS
         selectedTabIndex = pagerState.currentPage,
         divider = { Spacer(modifier = Modifier.height(0.dp)) },
         modifier = Modifier
+            .then(modifier)
             .background(BackgroundBlue, RoundedCornerShape(12.dp))
             .padding(4.dp)
             .fillMaxWidth()
@@ -188,7 +194,7 @@ fun TabRowView(pagerState: PagerState = PagerState(), coroutineScope: CoroutineS
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CustomIndicator(tabPositions: List<TabPosition>, pagerState: PagerState) {
     val transition = updateTransition(pagerState.currentPage, label = "")
@@ -231,7 +237,7 @@ private fun CustomIndicator(tabPositions: List<TabPosition>, pagerState: PagerSt
     )
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun TabRowPreview() {
@@ -247,7 +253,7 @@ private fun TabRowPreview() {
 private fun ViewPagerPreview() {
     KredoTestTheme {
         Surface(modifier = Modifier.fillMaxHeight(0.8f)) {
-            HorizontalViewPager(modifier = Modifier.fillMaxHeight())
+            SelectSourceViewPager(modifier = Modifier.fillMaxHeight())
         }
     }
 }

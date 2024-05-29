@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,12 +36,45 @@ import com.example.kredotest.ui.theme.Orange
 import com.example.kredotest.ui.theme.fieldHintStyle
 import com.example.kredotest.ui.theme.smallTextBlue
 
+
 @Composable
-fun CardView(card: Source.Card = Source.Card(), onChooseClick: (Source.Card) -> Unit = {}) {
+fun CardViewSelectable(
+    count: Source.Card = Source.Card(),
+    onChooseClick: (Source.Card) -> Unit = {}
+) {
+    CardView(
+        card = count,
+        onChooseClick = onChooseClick,
+        isSelectable = true,
+        isArrowDownVisible = false
+    )
+}
+
+@Composable
+fun CardViewWithArrow(
+    count: Source.Card = Source.Card(),
+    onChooseClick: (Source.Card) -> Unit = {}
+) {
+    CardView(
+        card = count,
+        onChooseClick = onChooseClick,
+        isSelectable = false,
+        isArrowDownVisible = true
+    )
+}
+
+@Composable
+private fun CardView(
+    card: Source.Card = Source.Card(),
+    isSelectable: Boolean,
+    isArrowDownVisible: Boolean,
+    onChooseClick: (Source.Card) -> Unit = {}
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = LightBlue, shape = RoundedCornerShape(12.dp))
+            .clip(shape = RoundedCornerShape(12.dp))
+            .background(color = LightBlue)
             .clickable {
                 Log.e("CardView", "choose product selected")
                 onChooseClick(card)
@@ -79,11 +113,33 @@ fun CardView(card: Source.Card = Source.Card(), onChooseClick: (Source.Card) -> 
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Icon(
-                modifier = Modifier.padding(end = 8.dp),
-                painter = painterResource(id = R.drawable.ic_mark),
-                contentDescription = "arrow down",
-                tint = if (card.isSelected) Orange else LightBlue
+            if (isSelectable) {
+                Icon(
+                    modifier = Modifier.padding(end = 16.dp),
+                    painter = painterResource(id = R.drawable.ic_mark),
+                    contentDescription = "mark icon",
+                    tint = if (card.isSelected) Orange else LightBlue
+                )
+            }
+            if (isArrowDownVisible) {
+                Icon(
+                    modifier = Modifier.padding(end = 16.dp),
+                    painter = painterResource(id = R.drawable.ic_arrow_down),
+                    contentDescription = "arrow down",
+                    tint = LightGray
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CardViewSelectablePreview() {
+    KredoTestTheme {
+        Surface(color = BackgroundBlue) {
+            CardViewSelectable(
+                mockCards[0].copy(isSelected = true),
             )
         }
     }
@@ -91,10 +147,12 @@ fun CardView(card: Source.Card = Source.Card(), onChooseClick: (Source.Card) -> 
 
 @Preview(showBackground = true)
 @Composable
-private fun CardViewPreview() {
+private fun CountViewWithArrowPreview() {
     KredoTestTheme {
         Surface(color = BackgroundBlue) {
-            CardView(mockCards[0])
+            CardViewWithArrow(
+                mockCards[0].copy(isSelected = true),
+            )
         }
     }
 }

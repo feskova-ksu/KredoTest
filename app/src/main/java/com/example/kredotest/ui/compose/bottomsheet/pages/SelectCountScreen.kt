@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.kredotest.ui.compose.bottomsheet.items.CountView
+import com.example.kredotest.ui.compose.bottomsheet.items.CountViewSelectable
 import com.example.kredotest.ui.data.Source
 import com.example.kredotest.ui.data.mockCounts
 import com.example.kredotest.ui.theme.KredoTestTheme
@@ -44,7 +44,7 @@ fun SelectCountsScreen(
             reverseLayout = false,
         ) {
             items(usedMockCards) {
-                CountView(it, onChooseClick = { selected ->
+                CountViewSelectable(it, onChooseClick = { selected ->
                     usedMockCards = usedMockCards.map { it.copy(isSelected = it.id == selected.id) }
                     newSelectedSource = selected
                     onNewSelected(newSelectedSource)

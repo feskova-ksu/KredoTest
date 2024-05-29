@@ -2,7 +2,7 @@ package com.example.kredotest.ui.data
 
 val mockCards = listOf(
     Source.Card(
-        0, "Правильна", "1234", 123, true
+        0, "Правильна", "1234", 123
     ),
     Source.Card(
         1, "Неравильна", "1209", 54123

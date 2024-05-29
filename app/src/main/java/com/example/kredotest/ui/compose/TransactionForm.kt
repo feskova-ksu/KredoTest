@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.kredotest.ui.data.FormData
 import com.example.kredotest.R
 import com.example.kredotest.ui.data.Source
 import com.example.kredotest.ui.theme.BackgroundBlue
@@ -54,9 +55,6 @@ import com.example.kredotest.ui.theme.fieldHintStyle
 import com.example.kredotest.ui.theme.fieldTitleStyle
 import com.example.kredotest.ui.theme.largePlaceHolder
 import com.example.kredotest.ui.theme.mediumPlaceHolder
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @SuppressLint("StateFlowValueCalledInComposition")
@@ -64,8 +62,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun TransactionForm(
     modifier: Modifier = Modifier,
+    formData: FormData = FormData(),
+    selectedSource: Source? = null,
     openDownSheet: () -> Unit = {},
-    selectedSource: StateFlow<Source?> = MutableStateFlow(null).asStateFlow(),
+    onAmountChanged: (String) -> Unit = {},
+    onPurposeChanged: (String) -> Unit = {},
 ) {
     Box(
         modifier = Modifier
@@ -83,11 +84,11 @@ fun TransactionForm(
             Text(text = "З картки/рахунку", style = fieldTitleStyle)
             Spacer(modifier = Modifier.height(8.dp))
 
-            if (selectedSource.value == null) {
+            if (selectedSource == null) {
                 ChooseProductInput { openDownSheet() }
             } else {
                 SelectedSource(
-                    source = selectedSource.value!!,
+                    source = selectedSource,
                     openDownSheet = { openDownSheet() }
                 )
             }
@@ -95,7 +96,6 @@ fun TransactionForm(
             Spacer(modifier = Modifier.height(24.dp))
             Text(text = "Сума", style = fieldTitleStyle)
             Spacer(modifier = Modifier.height(8.dp))
-            var sumText by remember { mutableStateOf("") }
             SumInput(
                 modifier = Modifier
                     .bringIntoViewRequester(bringIntoViewRequester)
@@ -105,13 +105,16 @@ fun TransactionForm(
                                 bringIntoViewRequester.bringIntoView()
                             }
                         }
-                    }, sumText
-            ) { sumText = it }
+                    },
+                formData.amount?.toString() ?: ""
+            ) {
+                onAmountChanged(it)
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "Призначення", style = fieldTitleStyle)
             Spacer(modifier = Modifier.height(8.dp))
-            var destinyText by remember { mutableStateOf("") }
-            DestinyInput(
+            PurposeInput(
                 modifier = Modifier
                     .bringIntoViewRequester(bringIntoViewRequester)
                     .onFocusEvent {
@@ -120,8 +123,8 @@ fun TransactionForm(
                                 bringIntoViewRequester.bringIntoView()
                             }
                         }
-                    }, destinyText
-            ) { destinyText = it }
+                    }, formData.purpose
+            ) { onPurposeChanged(it) }
         }
     }
 }
@@ -168,7 +171,7 @@ fun ChooseProductInput(openDownSheet: () -> Unit) {
 fun SumInput(modifier: Modifier = Modifier, messageText: String, onTextChange: (String) -> Unit) {
     TextField(
         textStyle = largePlaceHolder.copy(textAlign = TextAlign.Center),
-        value = messageText, onValueChange = { onTextChange(it.take(9)) },
+        value = messageText, onValueChange = onTextChange,
         modifier = Modifier
             .then(modifier)
             .fillMaxWidth()
@@ -195,7 +198,7 @@ fun SumInput(modifier: Modifier = Modifier, messageText: String, onTextChange: (
 }
 
 @Composable
-fun DestinyInput(modifier: Modifier, messageText: String, onTextChange: (String) -> Unit) {
+fun PurposeInput(modifier: Modifier, messageText: String, onTextChange: (String) -> Unit) {
     var border by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier

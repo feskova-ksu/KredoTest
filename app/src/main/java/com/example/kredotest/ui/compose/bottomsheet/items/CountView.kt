@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -38,11 +39,44 @@ import com.example.kredotest.ui.theme.smallBoldTitle
 import com.example.kredotest.ui.theme.smallTextBlue
 
 @Composable
-fun CountView(count: Source.Count = Source.Count(), onChooseClick: (Source.Count) -> Unit = {}) {
+fun CountViewSelectable(
+    count: Source.Count = Source.Count(),
+    onChooseClick: (Source.Count) -> Unit = {}
+) {
+    CountView(
+        count = count,
+        onChooseClick = onChooseClick,
+        isSelectable = true,
+        isArrowDownVisible = false
+    )
+}
+
+@Composable
+fun CountViewWithArrow(
+    count: Source.Count = Source.Count(),
+    onChooseClick: (Source.Count) -> Unit = {}
+) {
+    CountView(
+        count = count,
+        onChooseClick = onChooseClick,
+        isSelectable = false,
+        isArrowDownVisible = true
+    )
+}
+
+
+@Composable
+private fun CountView(
+    count: Source.Count = Source.Count(),
+    isSelectable: Boolean,
+    isArrowDownVisible: Boolean,
+    onChooseClick: (Source.Count) -> Unit = {}
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = LightBlue, shape = RoundedCornerShape(12.dp))
+            .clip(shape = RoundedCornerShape(12.dp))
+            .background(color = LightBlue)
             .clickable {
                 Log.e("CardView", "choose product selected")
                 onChooseClick(count)
@@ -88,11 +122,34 @@ fun CountView(count: Source.Count = Source.Count(), onChooseClick: (Source.Count
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Icon(
-                modifier = Modifier.padding(end = 16.dp),
-                painter = painterResource(id = R.drawable.ic_mark),
-                contentDescription = "arrow down",
-                tint = if (count.isSelected) Orange else LightBlue
+            if (isSelectable) {
+                Icon(
+                    modifier = Modifier.padding(end = 16.dp),
+                    painter = painterResource(id = R.drawable.ic_mark),
+                    contentDescription = "mark icon",
+                    tint = if (count.isSelected) Orange else LightBlue
+                )
+            }
+            if (isArrowDownVisible) {
+                Icon(
+                    modifier = Modifier.padding(end = 16.dp),
+                    painter = painterResource(id = R.drawable.ic_arrow_down),
+                    contentDescription = "arrow down",
+                    tint = LightGray
+                )
+            }
+        }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+private fun CountViewSelectablePreview() {
+    KredoTestTheme {
+        Surface(color = BackgroundBlue) {
+            CountViewSelectable(
+                mockCounts[0].copy(isSelected = true),
             )
         }
     }
@@ -100,10 +157,12 @@ fun CountView(count: Source.Count = Source.Count(), onChooseClick: (Source.Count
 
 @Preview(showBackground = true)
 @Composable
-private fun CountViewPreview() {
+private fun CountViewWithArrowPreview() {
     KredoTestTheme {
         Surface(color = BackgroundBlue) {
-            CountView(mockCounts[0])
+            CountViewWithArrow(
+                mockCounts[0].copy(isSelected = true),
+            )
         }
     }
 }

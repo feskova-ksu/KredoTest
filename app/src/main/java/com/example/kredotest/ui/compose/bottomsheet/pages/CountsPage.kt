@@ -27,6 +27,7 @@ fun CountsPage(
         EmptyCountsScreen(modifier)
     } else {
         SelectCountsScreen(
+            modifier = modifier,
             selectedSource = selectedSource,
             countsList = counts,
             onNewSelected = onNewSelected

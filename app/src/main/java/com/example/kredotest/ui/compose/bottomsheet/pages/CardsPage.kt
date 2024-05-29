@@ -27,6 +27,7 @@ fun CardsPage(
         EmptyCardsScreen(modifier = modifier)
     } else {
         SelectCardScreen(
+            modifier = modifier,
             selectedSource = selectedSource,
             cardsList = cards,
             onNewSelected = onNewSelected

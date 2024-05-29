@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -68,6 +69,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation("com.google.accompanist:accompanist-pager:0.24.10-beta")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.24.10-beta")
+//    implementation("com.google.accompanist:accompanist-pager:0.24.10-beta")
+//    implementation("com.google.accompanist:accompanist-pager-indicators:0.24.10-beta")
 }

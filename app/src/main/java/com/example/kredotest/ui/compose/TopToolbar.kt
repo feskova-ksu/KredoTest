@@ -1,11 +1,12 @@
 package com.example.kredotest.ui.compose
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,7 +22,7 @@ import com.example.kredotest.ui.theme.White50
 import com.example.kredotest.ui.theme.smallBoldTitle
 
 @Composable
-fun TopToolbar(modifier: Modifier = Modifier) {
+fun TopToolbar(modifier: Modifier = Modifier, title:String = "", subTitle: String ="", onArrowClick:()->Unit = {}) {
     Box(
         modifier = Modifier
             .then(modifier)
@@ -32,21 +33,21 @@ fun TopToolbar(modifier: Modifier = Modifier) {
         Icon(
             modifier = Modifier
                 .padding(16.dp)
-                .align(Alignment.CenterStart),
-            imageVector = Icons.Default.ArrowBack,
+                .align(Alignment.CenterStart).clickable { onArrowClick() },
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = "arrow back",
             tint = Color.White
         )
         Text(
             modifier = Modifier.align(Alignment.Center),
             style = smallBoldTitle,
-            text = "Переказ в межах банку"
+            text = title
         )
         Text(
             modifier = Modifier.align(Alignment.BottomCenter),
             color = White50,
             style = smallBoldTitle,
-            text = "Андрій Б. •• 2088 "
+            text = subTitle
         )
     }
 }
