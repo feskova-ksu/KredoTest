@@ -28,10 +28,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.kredotest.ui.data.FormData
+import com.example.kredotest.MainUIState
 import com.example.kredotest.MainViewModel
 import com.example.kredotest.ui.compose.bottomsheet.BottomSheet
-import com.example.kredotest.ui.data.Source
 import com.example.kredotest.ui.theme.BackgroundBlue
 import com.example.kredotest.ui.theme.KredoTestTheme
 
@@ -70,10 +69,7 @@ fun MainScreen(
             FormsColumn(
                 modifier = Modifier.weight(1f),
                 openDownSheet = { showSheet.value = true },
-                formData = uiState.form,
-                selectedSource = uiState.source,
-                selectedDate = uiState.selectedDate,
-                switchState = uiState.switchState,
+                uiState = uiState,
                 onSwitchChange = viewModel::onSwitchChanged,
                 onAmountChanged = viewModel::onAmountChanged,
                 onPurposeChanged = viewModel::onPurposeChanged,
@@ -108,10 +104,7 @@ fun MainScreen(
 @Composable
 fun FormsColumn(
     modifier: Modifier = Modifier,
-    formData: FormData = FormData(),
-    selectedSource: Source? = null,
-    selectedDate: String = "",
-    switchState: Boolean = false,
+    uiState: MainUIState = MainUIState(),
     onSwitchChange: (Boolean) -> Unit = {},
     openDownSheet: () -> Unit = {},
     onAmountChanged: (String) -> Unit = {},
@@ -122,25 +115,29 @@ fun FormsColumn(
     Column(
         modifier = Modifier
             .then(modifier)
+            .fillMaxSize()
             .clip(shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+            .background(Color.White)
             .verticalScroll(scrollState)
             .imePadding()
     ) {
-        TransactionForm(
-            openDownSheet = openDownSheet,
-            formData = formData,
-            selectedSource = selectedSource,
-            onAmountChanged = onAmountChanged,
-            onPurposeChanged = onPurposeChanged
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        FutureDateForm(
-            modifier = modifier,
-            checked = switchState,
-            onSwitchChange = onSwitchChange,
-            selectedDate = selectedDate,
-            onCalendarClick = onCalendarClick
-        )
+        Column(Modifier.background(BackgroundBlue)) {
+            TransactionForm(
+                formData = uiState.form,
+                selectedSource = uiState.source,
+                onAmountChanged = onAmountChanged,
+                onPurposeChanged = onPurposeChanged,
+                openDownSheet = openDownSheet
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            FutureDateForm(
+                modifier = Modifier.fillMaxSize(),
+                checked = uiState.switchState,
+                selectedDate = uiState.selectedDate,
+                onSwitchChange = onSwitchChange,
+                onCalendarClick = onCalendarClick
+            )
+        }
     }
 }
 

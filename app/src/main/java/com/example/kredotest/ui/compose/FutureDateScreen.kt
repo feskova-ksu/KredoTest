@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,7 +40,7 @@ fun FutureDateForm(
     onCalendarClick: () -> Unit = {}
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier.then(modifier).fillMaxSize()
             .background(
                 color = Color.White,
                 RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
@@ -109,11 +110,6 @@ fun FutureDateForm(
                 )
             }
         }
-        Spacer(
-            modifier = modifier
-                .weight(1f)
-                .background(color = Color.White)
-        )
     }
 }
 

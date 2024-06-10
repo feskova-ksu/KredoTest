@@ -29,11 +29,11 @@ import com.example.kredotest.ui.theme.smallText
 @Composable
 fun CalendarPicker(
     modifier: Modifier = Modifier,
-    selectedDate: String = "",
+    selectedDate: String? = null,
     onConfirm: (Long?) -> Unit = {}
 ) {
     Column(modifier = Modifier.then(modifier)) {
-        val dateState = if (selectedDate.isNotEmpty()) {
+        val dateState = if (!selectedDate.isNullOrEmpty()) {
             rememberDatePickerState(dateFormat.parse(selectedDate.replace(".","/",true))?.time)
         } else rememberDatePickerState()
         DatePicker(

@@ -8,21 +8,18 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.kredotest.MainViewModel
 
 @Composable
 fun CalendarScreen(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = MainViewModel(),
+    selectedDate: String? = null,
+    onSave: (Long?) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
-    val uiState by viewModel.uiState.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,9 +37,9 @@ fun CalendarScreen(
 
         CalendarPicker(
             modifier = Modifier.weight(1f),
-            selectedDate = uiState.selectedDate,
+            selectedDate = selectedDate,
             onConfirm = {
-                viewModel.saveDate(it)
+                onSave(it)
                 onBackClick()
             })
     }
